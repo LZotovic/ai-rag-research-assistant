@@ -9,6 +9,7 @@ main { width: min(1180px, calc(100% - 32px)); margin: auto; }
 nav { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d7d7cc; }
 .brand { display: flex; gap: 10px; align-items: center; color: #173f2d; text-decoration: none; font-size: 20px; font-weight: 700; }
 .badge { display: flex; gap: 6px; align-items: center; color: #315c47; font-size: 13px; background: #e2ede4; padding: 8px 12px; border-radius: 99px; }
+.badge.offline { color: #89523e; background: #f3e7df; }
 .hero { padding: 72px 0 48px; max-width: 780px; }
 .eyebrow { color: #3f755a; letter-spacing: .16em; font-size: 12px; font-weight: 700; }
 h1 { font-size: clamp(44px, 7vw, 76px); line-height: .98; letter-spacing: -.05em; margin: 14px 0 24px; }

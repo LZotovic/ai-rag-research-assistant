@@ -9,7 +9,11 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from rag_assistant.answers import ExtractiveAnswerGenerator
+from rag_assistant.answers import (
+    AnswerGenerator,
+    OllamaAnswerGenerator,
+    OllamaUnavailableError,
+)
 from rag_assistant.embeddings import SentenceTransformerEmbedder
 from rag_assistant.index import DocumentIndex
 from rag_assistant.pdf import PdfExtractionError, extract_pdf_pages
@@ -27,7 +31,10 @@ def get_index() -> DocumentIndex:
     return DocumentIndex(SentenceTransformerEmbedder(), database_path)
 
 
-def create_app(index: DocumentIndex | None = None) -> FastAPI:
+def create_app(
+    index: DocumentIndex | None = None,
+    answer_generator: AnswerGenerator | None = None,
+) -> FastAPI:
     app = FastAPI(
         title="CiteWise API",
         description="Semantic research assistant for cited PDF question answering.",
@@ -39,16 +46,27 @@ def create_app(index: DocumentIndex | None = None) -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    # The current checkpoint is intentionally retrieval-only. A local,
-    # open-source generator will be added in the next commit.
-    answer_generator = ExtractiveAnswerGenerator()
+    # Defaults are deliberately small enough for an 8 GB student laptop.
+    generator = answer_generator or OllamaAnswerGenerator(
+        model=os.getenv("OLLAMA_MODEL", "qwen3:1.7b"),
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+    )
 
     def active_index() -> DocumentIndex:
         return index if index is not None else get_index()
 
     @app.get("/api/health")
-    async def health() -> dict[str, str]:
-        return {"status": "ok"}
+    async def health() -> dict[str, str | bool]:
+        available = (
+            generator.is_available()
+            if isinstance(generator, OllamaAnswerGenerator)
+            else True
+        )
+        return {
+            "status": "ok",
+            "generator": "ollama",
+            "model_ready": available,
+        }
 
     @app.get("/api/documents")
     async def documents() -> list[dict]:
@@ -79,7 +97,10 @@ def create_app(index: DocumentIndex | None = None) -> FastAPI:
         results = active_index().search(request.question, request.top_k)
         if not results:
             raise HTTPException(409, "Upload at least one PDF before asking a question.")
-        answer = answer_generator.generate(request.question, results)
+        try:
+            answer = generator.generate(request.question, results)
+        except OllamaUnavailableError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         return {
             "answer": answer.text,
             "grounded": answer.grounded,

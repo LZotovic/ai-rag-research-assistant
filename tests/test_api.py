@@ -4,6 +4,7 @@ import httpx
 import numpy as np
 
 from rag_assistant.api import create_app
+from rag_assistant.answers import ExtractiveAnswerGenerator
 from rag_assistant.index import DocumentIndex
 
 
@@ -14,7 +15,10 @@ class KeywordEmbedder:
 
 def test_health_and_empty_index_response():
     async def request():
-        app = create_app(DocumentIndex(KeywordEmbedder()))
+        app = create_app(
+            DocumentIndex(KeywordEmbedder()),
+            ExtractiveAnswerGenerator(),
+        )
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(
             transport=transport,
@@ -30,5 +34,9 @@ def test_health_and_empty_index_response():
     health, question = asyncio.run(request())
 
     assert health.status_code == 200
-    assert health.json() == {"status": "ok"}
+    assert health.json() == {
+        "status": "ok",
+        "generator": "ollama",
+        "model_ready": True,
+    }
     assert question.status_code == 409

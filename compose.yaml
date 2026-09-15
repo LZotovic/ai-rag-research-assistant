@@ -6,6 +6,10 @@ services:
     environment:
       HF_HOME: /models
       CITEWISE_DB_PATH: /data/citewise.db
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:1.7b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - model-cache:/models
       - app-data:/data

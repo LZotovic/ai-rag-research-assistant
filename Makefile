@@ -1,8 +1,11 @@
-.PHONY: install test api web
+.PHONY: install model test api web
 
 install:
 	python -m pip install -e '.[dev]'
 	cd frontend && npm install
+
+model:
+	./scripts/setup_ollama.sh
 
 test:
 	pytest

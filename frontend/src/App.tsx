@@ -20,7 +20,7 @@ type Citation = {
 type Answer = {
   answer: string;
   grounded: boolean;
-  mode: "generated" | "extractive";
+  mode: "ollama" | "extractive";
   citations: Citation[];
 };
 
@@ -37,6 +37,7 @@ export default function App() {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [modelReady, setModelReady] = useState<boolean | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   async function loadDocuments() {
@@ -44,8 +45,17 @@ export default function App() {
     if (response.ok) setDocuments(await response.json());
   }
 
+  async function loadHealth() {
+    const response = await fetch(`${API}/api/health`);
+    if (response.ok) {
+      const health = await response.json();
+      setModelReady(health.model_ready);
+    }
+  }
+
   useEffect(() => {
     loadDocuments().catch(() => setMessage("Could not connect to the API."));
+    loadHealth().catch(() => setModelReady(false));
   }, []);
 
   async function upload(file?: File) {
@@ -102,7 +112,10 @@ export default function App() {
     <main>
       <nav>
         <a className="brand" href="#"><BookOpen size={22} /> CiteWise</a>
-        <span className="badge"><ShieldCheck size={15} /> Evidence first</span>
+        <span className={`badge ${modelReady === false ? "offline" : ""}`}>
+          <ShieldCheck size={15} />
+          {modelReady === null ? "Checking local model…" : modelReady ? "Local LLM ready" : "Ollama not ready"}
+        </span>
       </nav>
 
       <section className="hero">
@@ -162,7 +175,7 @@ export default function App() {
                 <span className={answer.grounded ? "grounded" : "ungrounded"}>
                   {answer.grounded ? "Evidence found" : "Insufficient evidence"}
                 </span>
-                <span className="mode">{answer.mode === "generated" ? "LLM answer" : "Extractive mode"}</span>
+                <span className="mode">{answer.mode === "ollama" ? "Local LLM answer" : "Extractive mode"}</span>
               </div>
               <h2>{answer.answer}</h2>
               <div className="citations">
