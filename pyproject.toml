@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-rag-research-assistant"
+version = "0.1.0"
+description = "A production-style PDF research assistant with semantic search and citations"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=2.0,<3.0",
+    "pypdf>=5.0,<7.0",
+    "sentence-transformers>=3.0,<6.0",
+    "fastapi>=0.115,<0.116",
+    "python-multipart>=0.0.12,<1.0",
+    "uvicorn[standard]>=0.30,<0.36",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27,<0.29",
+    "pytest>=8.0,<9.0",
+]
+
+[project.scripts]
+rag-assistant = "rag_assistant.api:run"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
