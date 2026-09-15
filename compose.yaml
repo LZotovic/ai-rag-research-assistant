@@ -1,0 +1,15 @@
+services:
+  citewise:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      HF_HOME: /models
+      CITEWISE_DB_PATH: /data/citewise.db
+    volumes:
+      - model-cache:/models
+      - app-data:/data
+
+volumes:
+  model-cache:
+  app-data:
