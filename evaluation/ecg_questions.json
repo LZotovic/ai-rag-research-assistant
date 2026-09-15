@@ -1,0 +1,10 @@
+[
+  {"question": "What macro-F1 score did the quantized model achieve?", "expected_page": 4},
+  {"question": "How many trainable parameters does the CNN contain?", "expected_page": 2},
+  {"question": "Which heartbeat class is the most underrepresented?", "expected_page": 2},
+  {"question": "How were the manual convolution gradients checked?", "expected_page": 3},
+  {"question": "What was the exported INT8 model size?", "expected_page": 5},
+  {"question": "What tensor arena size was used on the ESP32?", "expected_page": 1},
+  {"question": "What important deployment limitation does the firmware have?", "expected_page": 6},
+  {"question": "How was the work divided between the two students?", "expected_page": 8}
+]
