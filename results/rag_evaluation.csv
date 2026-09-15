@@ -6,4 +6,4 @@ How were the manual convolution gradients checked?,3,3,1,1,1,0.3936,10.83,1970.3
 What was the exported INT8 model size?,5,4,0,1,1,0.429,6.88,1104.2,True,True,"The exported INT8 model size was 23,576 bytes, representing a 73.91% reduction from the float32 model size of 90,361 bytes."
 What tensor arena size was used on the ESP32?,1,4,0,1,1,0.5748,7.29,878.92,True,True,The ESP32 uses an 80 KiB tensor arena size.
 What important deployment limitation does the firmware have?,6,6,1,1,1,0.2521,6.87,1368.04,True,True,"The firmware has important deployment limitations including the inability to acquire live analog signals, detect R-peaks, segment beats, or manage confidence. The model is pre-segmented and does not support real-time acquisition, leading to an academic TinyML prototype rather than a clinically validated diagnostic system."
-How was the work divided between the two students?,8,7,0,1,1,0.1619,7.1,0.01,False,True,I could not find enough evidence in the uploaded documents.
+How was the work divided between the two students?,8,7,0,1,1,0.1619,7.1,0.01,False,,I could not find enough evidence in the uploaded documents.

@@ -95,8 +95,9 @@ def main():
         figure.text(
             0.5,
             0.01,
-            f"Grounded answers: {grounded_rate:.0%}   |   "
-            f"Valid citations: {citation_rate:.0%}   |   Questions: {len(rows)}",
+            f"LLM marked grounded: {grounded_rate:.0%}   |   "
+            f"Valid citations (grounded): {citation_rate:.0%}   |   "
+            f"Questions: {len(rows)}",
             ha="center",
             fontsize=11,
         )

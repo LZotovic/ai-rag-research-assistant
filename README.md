@@ -118,6 +118,28 @@ The chart is saved to `results/evaluation_dashboard.png` and summarizes
 Recall@k, retrieval latency, similarity scores, generation latency, grounding,
 and citation validity.
 
+### Recorded ECG report results
+
+The repository includes one reproducible run over eight hand-labeled questions
+about the accompanying ECG project report:
+
+| Metric | Result |
+|---|---:|
+| Recall@1 | 50.0% (4/8) |
+| Recall@3 | 87.5% (7/8) |
+| Recall@5 | 87.5% (7/8) |
+| Answers marked grounded by the LLM | 87.5% (7/8) |
+| Structurally valid citations on grounded answers | 100% (7/7) |
+
+![CiteWise evaluation dashboard](results/evaluation_dashboard.png)
+
+These are baseline results from a small, project-specific dataset, not a claim
+of general RAG accuracy. Citation validity means cited pages came from the
+retrieved context; it does not by itself prove that every generated statement
+is correct. The CSV intentionally exposes weak cases: one expected page was
+not found in the top five, and one question caused the system to abstain. This
+makes retrieval and answer-quality improvements measurable rather than hidden.
+
 ## Docker
 
     docker compose up --build
@@ -128,11 +150,11 @@ Then open http://localhost:8000.
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | /api/health | Liveness check |
+| GET | /api/health | API health and local-model readiness |
 | GET | /api/documents | List indexed PDFs |
 | POST | /api/documents | Upload and index a PDF |
 | DELETE | /api/documents/{id} | Remove a PDF |
-| POST | /api/questions | Retrieve cited evidence |
+| POST | /api/questions | Generate an evidence-grounded answer with citations |
 
 ## Engineering decisions
 

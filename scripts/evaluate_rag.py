@@ -60,7 +60,15 @@ def main():
                 generation_ms = (perf_counter() - generation_start) * 1000
                 grounded = answer.grounded
                 cited_pages = [citation.page for citation in answer.citations]
-                citation_valid = all(page in retrieved_pages for page in cited_pages)
+                # Citation validity applies only to grounded answers that
+                # actually contain citations. Abstentions have no citation to
+                # validate and are therefore recorded as blank, not True.
+                citation_valid = (
+                    bool(cited_pages)
+                    and all(page in retrieved_pages for page in cited_pages)
+                    if answer.grounded
+                    else None
+                )
                 answer_text = answer.text
             except OllamaUnavailableError as exc:
                 raise SystemExit(str(exc)) from exc
