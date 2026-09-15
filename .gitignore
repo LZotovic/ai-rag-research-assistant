@@ -8,4 +8,7 @@ frontend/dist/
 frontend/node_modules/
 .coverage
 data/
+results/*
+!results/rag_evaluation.csv
+!results/evaluation_dashboard.png
 data/
